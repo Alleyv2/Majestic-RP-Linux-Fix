@@ -1,0 +1,9 @@
+{
+  "files": [
+    "gui.py",
+    "install_app.py",
+    "download_dependency.py",
+    "configure.py",
+    "patch_ntdll.py"
+  ]
+}

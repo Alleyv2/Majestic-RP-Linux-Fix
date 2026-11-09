@@ -1,0 +1,13 @@
+"compatibilitytools"
+{
+  "compat_tools"
+  {
+    "Proton-Exp-MJLX"
+    {
+      "install_path" "."
+      "display_name" "Proton Experimental (MJLX RCX fix)"
+      "from_oslist"  "windows"
+      "to_oslist"    "linux"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Majestic RP
+Name[ru]=Majestic RP
+GenericName=GTA V Roleplay
+Comment=Launch Majestic RP through the patched Proton
+Comment[ru]=Запуск Majestic RP через исправленный Proton
+Exec=@@HOME@@/.local/bin/majestic-rp.sh
+Icon=@@HOME@@/.local/share/icons/majestic-rp.png
+Terminal=false
+Categories=Game;RolePlaying;
+Keywords=GTA;Majestic;RP;Proton;
+StartupNotify=true
