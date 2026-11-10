@@ -39,6 +39,7 @@ def copy_project() -> None:
         "install_app.py",
         "compatibilitytool.vdf",
         "launch-majestic.template.sh",
+        "mangohud-gta.conf",
         "majestic-rp.desktop.template",
         "README.md",
         "README_RU.md",

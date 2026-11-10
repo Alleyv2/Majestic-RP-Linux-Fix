@@ -91,7 +91,7 @@ TEXT = {
         "about_text": "Независимый графический установщик для GTA V Legacy и Majestic RP в Linux. Он проверяет систему, создаёт отдельный исправленный Proton, устанавливает Majestic и запускает компоненты в правильном порядке.",
         "privacy_text": "Сторонние бинарники не включены в исходный код. MIT-зависимость загружается отдельно только после согласия и проверяется по SHA-256.",
         "creator": "Создатель программы",
-        "version": "Версия 1.1.1 · Qt 6 · KDE friendly",
+        "version": "Версия 1.1.2 · Qt 6 · KDE friendly",
         "confirm_install": "Steam, Rockstar Launcher, Majestic и GTA будут штатно закрыты на время установки. Продолжить?",
         "dependency_title": "Внешняя MIT-зависимость",
         "dependency_text": "Для подготовки Majestic требуется majestic-rp-linux. Он будет скачан отдельно с GitHub из закреплённого коммита, проверен по SHA-256 и сохранён вместе с оригинальной MIT-лицензией. Продолжить?",
@@ -156,7 +156,7 @@ TEXT = {
         "about_text": "An independent graphical installer for GTA V Legacy and Majestic RP on Linux. It checks the system, creates a separate patched Proton tool, installs Majestic, and starts components in the correct order.",
         "privacy_text": "Third-party binaries are not bundled with the source. The MIT dependency is downloaded separately only with consent and verified by SHA-256.",
         "creator": "Created by",
-        "version": "Version 1.1.1 · Qt 6 · KDE friendly",
+        "version": "Version 1.1.2 · Qt 6 · KDE friendly",
         "confirm_install": "Steam, Rockstar Launcher, Majestic and GTA will be closed cleanly during installation. Continue?",
         "dependency_title": "External MIT dependency",
         "dependency_text": "Preparing Majestic requires majestic-rp-linux. It will be downloaded separately from a pinned GitHub commit, verified by SHA-256, and stored with its original MIT license. Continue?",
@@ -336,7 +336,7 @@ class MainWindow(QMainWindow):
             button.clicked.connect(lambda checked=False, value=code: self.change_language(value))
             language_row.addWidget(button)
         side.addLayout(language_row)
-        version = QLabel("v1.1.1")
+        version = QLabel("v1.1.2")
         version.setObjectName("sideVersion")
         side.addWidget(version)
 

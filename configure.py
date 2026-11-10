@@ -87,6 +87,7 @@ def main() -> int:
     parser.add_argument("--proton")
     parser.add_argument("--prefix")
     parser.add_argument("--gta")
+    parser.add_argument("--launch-options", default="")
     parser.add_argument("--steam-config", type=Path)
     parser.add_argument("--tool")
     args = parser.parse_args()
@@ -100,6 +101,7 @@ def main() -> int:
                 "MAJESTIC_AUTO_DETECT": "1",
                 "MAJESTIC_PERMISSIONS": "1",
                 "MAJESTIC_STEAM_OVERLAY": "0",
+                "MAJESTIC_LAUNCH_OPTIONS": args.launch_options,
                 "GTA_WINE_DRIVE": "g",
                 "STEAM_COMPAT_DATA_PATH": args.prefix,
                 "GTA_PATH": args.gta,

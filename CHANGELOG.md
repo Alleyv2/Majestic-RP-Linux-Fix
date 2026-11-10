@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2 — 2026-11-10
+
+- added a compact MangoHud FPS counter in the top-right corner of GTA V;
+- kept the overlay away from known Majestic and Rockstar launcher processes;
+- added `Right Shift + F12` as the in-game show/hide shortcut;
+- made FPS configuration automatic when MangoHud is installed.
+
 ## 1.1.1 — 2026-11-09
 
 - fixed the About page layout at wide and short window sizes;

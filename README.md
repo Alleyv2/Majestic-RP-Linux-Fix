@@ -18,6 +18,7 @@ A bilingual graphical installer, repair tool, and launcher for running Majestic 
 - shared Proton prefix for Majestic, Rockstar Launcher, and GTA V;
 - bilingual Russian/English interface and KDE-friendly desktop integration;
 - recoverable log clearing and sanitized log display.
+- optional compact MangoHud FPS counter in the top-right corner of GTA V.
 
 ## Quick start
 

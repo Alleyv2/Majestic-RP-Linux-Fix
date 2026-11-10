@@ -22,6 +22,7 @@ This installs the application under `~/.local/share/majestic-rp-linux-fix`, regi
 - keeps Majestic, Rockstar Launcher and GTA in one Proton prefix;
 - launches Majestic and displays configuration and injection logs;
 - backs up configuration and can disable the fix without deleting its files.
+- automatically enables a compact top-right FPS counter when MangoHud is installed; `Right Shift + F12` toggles it.
 
 ## Usage
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-APP_VERSION="1.1.1"
+APP_VERSION="1.1.2"
 APP_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 APP_ID="271590"
 TOOL_NAME="Proton-Exp-MJLX"
@@ -152,11 +152,22 @@ build_patched_proton() {
 configure_all() {
   RUNNER_PATH="$(find_runner)" || return 1
   mkdir -p "$HOME/.config/majestic-runner" "$HOME/.local/bin"
+  local fps_config="$HOME/.config/MangoHud/majestic-gta.conf"
+  local launch_options=""
+  if command -v mangohud >/dev/null 2>&1; then
+    mkdir -p "$(dirname -- "$fps_config")"
+    if [[ -f "$fps_config" ]]; then
+      cp -a "$fps_config" "$fps_config.mjlx-backup-$(date +%Y%m%d-%H%M%S)"
+    fi
+    cp "$APP_DIR/mangohud-gta.conf" "$fps_config"
+    launch_options="MANGOHUD=1 MANGOHUD_CONFIGFILE=$fps_config %command%"
+  fi
   python3 "$APP_DIR/configure.py" \
     --config "$HOME/.config/majestic-runner/majestic-runner.conf" \
     --proton "$TARGET_PROTON/proton" \
     --prefix "$PREFIX" \
-    --gta "$GTA_PATH"
+    --gta "$GTA_PATH" \
+    --launch-options "$launch_options"
   python3 "$APP_DIR/configure.py" --steam-config "$STEAM_CONFIG" --tool "$TOOL_NAME"
 
   local launcher="$HOME/.local/bin/majestic-rp.sh"
