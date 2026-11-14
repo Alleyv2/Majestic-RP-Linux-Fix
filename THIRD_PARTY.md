@@ -12,7 +12,7 @@ The runner is not bundled in this repository. With explicit user consent, `downl
 
 Steam, Proton Experimental, Wine, Rockstar Games Launcher, Grand Theft Auto V and Majestic Launcher are also external software and are not part of this repository.
 
-The GUI uses Qt for Python / PySide6, provided under the LGPLv3/GPLv3 or a commercial Qt license. Standalone releases use the LGPLv3 option and keep Qt as separate shared libraries inside the temporary application bundle. Python is distributed under the Python Software Foundation License. PyInstaller and its bootloader are distributed under GPL terms with the PyInstaller bootloader exception. The release archive includes the exact upstream license files collected from the build environment under `LICENSES/`; the same files are embedded in the one-file executable.
+The GUI uses Qt for Python / PySide6, provided under the LGPLv3/GPLv3 or a commercial Qt license. Standalone releases use the LGPLv3 option and keep Qt as separate shared libraries inside the temporary application bundle. Python is distributed under the Python Software Foundation License. PyInstaller and its bootloader are distributed under GPL terms with the PyInstaller bootloader exception. The repository keeps the applicable Qt license texts under `LICENSES/Qt`; the build also collects Python and PyInstaller notices into the release `LICENSES/` directory. Those files are included both in the archive and inside the one-file executable.
 
 ## Compatibility technique
 

@@ -9,8 +9,9 @@ import sys
 from pathlib import Path
 
 
-PACKAGES = ("PySide6", "PySide6-Essentials", "shiboken6", "PyInstaller")
+PACKAGES = ("PyInstaller",)
 MARKERS = ("license", "copying", "notice")
+BUNDLED_LICENSES = Path(__file__).resolve().parent.parent / "LICENSES"
 
 
 def collect_package(name: str, destination: Path) -> int:
@@ -52,7 +53,9 @@ def main() -> int:
     destination = Path(sys.argv[1])
     if destination.exists():
         shutil.rmtree(destination)
-    destination.mkdir(parents=True)
+    if not BUNDLED_LICENSES.is_dir():
+        raise SystemExit(f"Bundled Qt license directory is missing: {BUNDLED_LICENSES}")
+    shutil.copytree(BUNDLED_LICENSES, destination)
     missing = [name for name in PACKAGES if collect_package(name, destination) == 0]
     if not collect_python(destination):
         missing.append("Python")
