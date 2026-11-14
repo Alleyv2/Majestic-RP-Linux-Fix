@@ -7,9 +7,11 @@ import argparse
 import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
-SOURCE = Path(__file__).resolve().parent
+FROZEN = bool(getattr(sys, "frozen", False))
+SOURCE = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 HOME = Path.home()
 DATA_HOME = Path(os.environ.get("XDG_DATA_HOME", HOME / ".local/share"))
 BIN_HOME = HOME / ".local/bin"
@@ -36,6 +38,7 @@ def copy_project() -> None:
         "patch_ntdll.py",
         "configure.py",
         "download_dependency.py",
+        "dependency_check.py",
         "install_app.py",
         "compatibilitytool.vdf",
         "launch-majestic.template.sh",
@@ -49,6 +52,7 @@ def copy_project() -> None:
         "LICENSE",
         "ARCHITECTURE.md",
         "SECURITY.md",
+        "requirements.txt",
     }
     for name in allowed:
         source = SOURCE / name
@@ -64,7 +68,15 @@ def write_launchers(create_desktop: bool) -> None:
     BIN_HOME.mkdir(parents=True, exist_ok=True)
     APPLICATIONS.mkdir(parents=True, exist_ok=True)
     wrapper = BIN_HOME / "majestic-linux-fix"
-    wrapper.write_text(f'#!/bin/sh\nexec python3 "{APP_HOME / "gui.py"}" "$@"\n')
+    if FROZEN:
+        installed_binary = APP_HOME / "Majestic-RP-Linux-Fix"
+        source_binary = Path(sys.executable).resolve()
+        if source_binary != installed_binary.resolve():
+            shutil.copy2(source_binary, installed_binary)
+        installed_binary.chmod(0o755)
+        wrapper.write_text(f'#!/bin/sh\nexec "{installed_binary}" "$@"\n')
+    else:
+        wrapper.write_text(f'#!/bin/sh\nexec python3 "{APP_HOME / "gui.py"}" "$@"\n')
     wrapper.chmod(0o755)
 
     icon = DATA_HOME / "icons/majestic-rp.png"
@@ -113,14 +125,18 @@ Exec={wrapper}
         subprocess.run(["update-desktop-database", str(APPLICATIONS)], check=False)
 
 
+def install_application(no_desktop: bool = False) -> None:
+    copy_project()
+    write_launchers(not no_desktop)
+    print(f"Installed: {APP_HOME}")
+    print(f"Launcher: {BIN_HOME / 'majestic-linux-fix'}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--no-desktop", action="store_true")
     args = parser.parse_args()
-    copy_project()
-    write_launchers(not args.no_desktop)
-    print(f"Installed: {APP_HOME}")
-    print(f"Launcher: {BIN_HOME / 'majestic-linux-fix'}")
+    install_application(args.no_desktop)
     return 0
 
 

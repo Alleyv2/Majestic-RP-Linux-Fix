@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-APP_VERSION="1.1.2"
+APP_VERSION="1.2.0"
 APP_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 APP_ID="271590"
 TOOL_NAME="Proton-Exp-MJLX"
@@ -39,6 +39,14 @@ confirm() {
     read -r answer
     [[ "$answer" =~ ^([yY]|[дД])$ ]]
   fi
+}
+
+preflight_check() {
+  command -v python3 >/dev/null 2>&1 || {
+    error "$(trm 'Не найден Python 3. Установите python и повторите.' 'Python 3 was not found. Install python3 and retry.')"
+    return 1
+  }
+  python3 "$APP_DIR/dependency_check.py" --lang "$LANG_CHOICE" || return 1
 }
 
 find_steam_root() {
@@ -185,6 +193,7 @@ configure_all() {
 }
 
 install_fix() {
+  preflight_check || return 1
   detect_paths || return 1
   [[ -d "$GTA_PATH" ]] || {
     error "$(trm 'GTA V Legacy не найдена. Сначала установите в Steam именно Grand Theft Auto V Legacy.' 'GTA V Legacy was not found. Install Grand Theft Auto V Legacy in Steam first.')"

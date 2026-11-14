@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 from datetime import datetime
@@ -14,6 +15,7 @@ from PySide6.QtWidgets import (
     QApplication,
     QFrame,
     QGraphicsDropShadowEffect,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QMainWindow,
@@ -27,7 +29,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-APP_DIR = Path(__file__).resolve().parent
+from dependency_check import check_dependencies, format_report
+from install_app import install_application
+
+APP_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
 HOME = Path.home()
 STEAM = HOME / ".local/share/Steam"
 PREFIX = STEAM / "steamapps/compatdata/271590"
@@ -56,6 +61,7 @@ TEXT = {
         "gta": "GTA V Legacy",
         "fix": "Proton Fix",
         "launcher": "Majestic",
+        "deps": "Система",
         "online": "готов",
         "missing": "не найден",
         "steam_ready": "запущен",
@@ -66,6 +72,8 @@ TEXT = {
         "fix_missing": "не установлен",
         "launcher_ready": "установлен",
         "launcher_missing": "не установлен",
+        "deps_ready": "готова",
+        "deps_missing": "есть проблемы",
         "quick": "Быстрые действия",
         "repair_desc": "Одна кнопка проверит зависимости, скачает закреплённые компоненты и настроит общий префикс.",
         "logs_desc": "Посмотреть последнюю инъекцию и сообщения запуска без поиска файлов вручную.",
@@ -91,7 +99,9 @@ TEXT = {
         "about_text": "Независимый графический установщик для GTA V Legacy и Majestic RP в Linux. Он проверяет систему, создаёт отдельный исправленный Proton, устанавливает Majestic и запускает компоненты в правильном порядке.",
         "privacy_text": "Сторонние бинарники не включены в исходный код. MIT-зависимость загружается отдельно только после согласия и проверяется по SHA-256.",
         "creator": "Создатель программы",
-        "version": "Версия 1.1.2 · Qt 6 · KDE friendly",
+        "version": "Версия 1.2.0 · автономная сборка · Qt 6",
+        "dependency_error_title": "Не хватает зависимостей",
+        "dependency_copied": "Команда установки скопирована в буфер обмена.",
         "confirm_install": "Steam, Rockstar Launcher, Majestic и GTA будут штатно закрыты на время установки. Продолжить?",
         "dependency_title": "Внешняя MIT-зависимость",
         "dependency_text": "Для подготовки Majestic требуется majestic-rp-linux. Он будет скачан отдельно с GitHub из закреплённого коммита, проверен по SHA-256 и сохранён вместе с оригинальной MIT-лицензией. Продолжить?",
@@ -121,6 +131,7 @@ TEXT = {
         "gta": "GTA V Legacy",
         "fix": "Proton Fix",
         "launcher": "Majestic",
+        "deps": "System",
         "online": "ready",
         "missing": "missing",
         "steam_ready": "running",
@@ -131,6 +142,8 @@ TEXT = {
         "fix_missing": "not installed",
         "launcher_ready": "installed",
         "launcher_missing": "not installed",
+        "deps_ready": "ready",
+        "deps_missing": "needs attention",
         "quick": "Quick actions",
         "repair_desc": "One button checks dependencies, downloads pinned components and configures the shared prefix.",
         "logs_desc": "Read the latest injection and launch messages without hunting for files.",
@@ -156,7 +169,9 @@ TEXT = {
         "about_text": "An independent graphical installer for GTA V Legacy and Majestic RP on Linux. It checks the system, creates a separate patched Proton tool, installs Majestic, and starts components in the correct order.",
         "privacy_text": "Third-party binaries are not bundled with the source. The MIT dependency is downloaded separately only with consent and verified by SHA-256.",
         "creator": "Created by",
-        "version": "Version 1.1.2 · Qt 6 · KDE friendly",
+        "version": "Version 1.2.0 · standalone build · Qt 6",
+        "dependency_error_title": "Missing dependencies",
+        "dependency_copied": "The install command was copied to the clipboard.",
         "confirm_install": "Steam, Rockstar Launcher, Majestic and GTA will be closed cleanly during installation. Continue?",
         "dependency_title": "External MIT dependency",
         "dependency_text": "Preparing Majestic requires majestic-rp-linux. It will be downloaded separately from a pinned GitHub commit, verified by SHA-256, and stored with its original MIT license. Continue?",
@@ -202,9 +217,10 @@ def backup_and_clear_log(path: Path, now: datetime | None = None) -> Path:
 def current_status() -> dict[str, bool]:
     patched = False
     target = PROTON / "files/lib/wine/x86_64-unix/ntdll.so"
-    if target.is_file():
+    python = shutil.which("python3")
+    if target.is_file() and python:
         result = subprocess.run(
-            [sys.executable, str(APP_DIR / "patch_ntdll.py"), "--check", str(target)],
+            [python, str(APP_DIR / "patch_ntdll.py"), "--check", str(target)],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
@@ -219,6 +235,7 @@ def current_status() -> dict[str, bool]:
         "launcher": launcher.is_file(),
         "active": process_exists("GTA5.exe"),
         "injection": injection,
+        "deps": check_dependencies().ok,
     }
 
 
@@ -336,7 +353,7 @@ class MainWindow(QMainWindow):
             button.clicked.connect(lambda checked=False, value=code: self.change_language(value))
             language_row.addWidget(button)
         side.addLayout(language_row)
-        version = QLabel("v1.1.2")
+        version = QLabel("v1.2.0")
         version.setObjectName("sideVersion")
         side.addWidget(version)
 
@@ -398,12 +415,14 @@ class MainWindow(QMainWindow):
         hero_layout.addWidget(self.play_button)
         box.addWidget(hero)
 
-        pills = QHBoxLayout()
+        pills = QGridLayout()
+        pills.setHorizontalSpacing(12)
+        pills.setVerticalSpacing(12)
         self.pills = {}
-        for key in ("steam", "gta", "fix", "launcher"):
+        for index, key in enumerate(("steam", "gta", "fix", "launcher", "deps")):
             pill = StatusPill(self.t[key])
             self.pills[key] = pill
-            pills.addWidget(pill)
+            pills.addWidget(pill, index // 3, index % 3)
         box.addLayout(pills)
 
         quick = QLabel(self.t["quick"])
@@ -572,12 +591,12 @@ class MainWindow(QMainWindow):
 
     def refresh_status(self) -> None:
         status = current_status()
-        core_ready = status["gta"] and status["fix"] and status["runner"] and status["launcher"]
+        core_ready = status["gta"] and status["fix"] and status["runner"] and status["launcher"] and status["deps"]
         self.hero_status.setText(("●  " if core_ready else "○  ") + self.t["ready" if core_ready else "needs"])
         self.hero_status.setStyleSheet(f"color: {'#72e5aa' if core_ready else '#ff8ca2'};")
         self.hero_detail.setText(self.t["ready_detail" if core_ready else "needs_detail"])
         self.play_button.setEnabled(core_ready)
-        for key, actual in (("steam", status["steam"]), ("gta", status["gta"]), ("fix", status["fix"]), ("launcher", status["launcher"])):
+        for key, actual in (("steam", status["steam"]), ("gta", status["gta"]), ("fix", status["fix"]), ("launcher", status["launcher"]), ("deps", status["deps"])):
             self.pills[key].set_state(actual, self.t[f"{key}_ready"], self.t[f"{key}_missing"])
 
     def launch(self) -> None:
@@ -588,6 +607,12 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, "Majestic RP", self.t["launched"])
 
     def start_install(self) -> None:
+        dependency_report = check_dependencies()
+        if not dependency_report.ok:
+            QApplication.clipboard().setText(dependency_report.install_command)
+            message = format_report(dependency_report, self.lang) + "\n\n" + self.t["dependency_copied"]
+            QMessageBox.critical(self, self.t["dependency_error_title"], message)
+            return
         if not (GTA / "GTA5.exe").is_file():
             if QMessageBox.question(self, "GTA V Legacy", self.t["gta_required"]) == QMessageBox.StandardButton.Yes:
                 QProcess.startDetached("steam", ["steam://install/271590"])
@@ -608,7 +633,7 @@ class MainWindow(QMainWindow):
             if consent != QMessageBox.StandardButton.Yes:
                 self.finish_operation(False)
                 return
-            self.run_process(sys.executable, [str(APP_DIR / "download_dependency.py")], self.install_backend)
+            self.run_process(shutil.which("python3") or "python3", [str(APP_DIR / "download_dependency.py")], self.install_backend)
         else:
             self.install_backend()
 
@@ -637,7 +662,12 @@ class MainWindow(QMainWindow):
             self.activity.appendPlainText(text.rstrip())
 
     def install_done(self) -> None:
-        subprocess.run([sys.executable, str(APP_DIR / "install_app.py")], check=False)
+        try:
+            install_application()
+        except (OSError, subprocess.SubprocessError) as error:
+            self.activity.appendPlainText(f"Desktop integration failed: {error}")
+            self.finish_operation(False)
+            return
         self.finish_operation(True)
 
     def finish_operation(self, success: bool) -> None:

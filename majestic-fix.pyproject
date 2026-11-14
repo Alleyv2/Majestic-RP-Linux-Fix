@@ -3,6 +3,7 @@
     "gui.py",
     "install_app.py",
     "download_dependency.py",
+    "dependency_check.py",
     "configure.py",
     "patch_ntdll.py"
   ]

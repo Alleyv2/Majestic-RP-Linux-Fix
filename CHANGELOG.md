@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 — 2026-11-14
+
+- added a standalone x86_64 Linux executable with bundled Python, PySide6 and Qt runtime;
+- added automatic required-dependency checks with distro-specific install commands for Arch, Debian/Ubuntu and Fedora;
+- added a visible system-readiness state to the main dashboard;
+- made the installed desktop shortcut keep using the standalone executable;
+- added reproducible GitHub Actions release builds, SHA-256 checksums and automated tests.
+
 ## 1.1.2 — 2026-11-10
 
 - added a compact MangoHud FPS counter in the top-right corner of GTA V;

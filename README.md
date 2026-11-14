@@ -22,7 +22,13 @@ A bilingual graphical installer, repair tool, and launcher for running Majestic 
 
 ## Quick start
 
-Install Python 3 and PySide6, download this repository, then run:
+For most users, download `Majestic-RP-Linux-Fix-v1.2.0-linux-x86_64.tar.gz` from Releases, extract it and run:
+
+```bash
+./Majestic-RP-Linux-Fix-x86_64
+```
+
+The standalone build includes the GUI runtime and checks the remaining system dependencies before installation. Source users can still install Python 3 and PySide6, download this repository, then run:
 
 ```bash
 python3 install_app.py
@@ -37,6 +43,6 @@ Open **Majestic RP Linux Fix** from the application menu and choose **Install or
 - [Architecture and distribution](ARCHITECTURE.md)
 - [Security policy](SECURITY.md)
 
-This repository contains no vendored third-party source code or binaries. The separately licensed runner is downloaded only after explicit consent, from a pinned commit, and verified by SHA-256.
+The source tree contains no vendored runner code. Standalone release binaries bundle the Python/PySide6/Qt runtime under their respective licenses; the separately licensed runner is still downloaded only after explicit consent, from a pinned commit, and verified by SHA-256.
 
 Created by [Alley](https://github.com/Alleyv2). This is an unofficial community utility and is not affiliated with Majestic RP, Rockstar Games, Valve, or CodeWeavers.

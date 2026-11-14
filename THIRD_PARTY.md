@@ -1,6 +1,6 @@
 # Third-party dependencies and attribution
 
-This repository does not contain or redistribute third-party source code or binaries.
+The source repository does not vendor the external Majestic runner or other game software. Standalone release assets do bundle the Python, PySide6/Qt and PyInstaller runtime components needed to start the GUI; those components remain under their own licenses.
 
 ## Runtime dependencies
 
@@ -12,7 +12,7 @@ The runner is not bundled in this repository. With explicit user consent, `downl
 
 Steam, Proton Experimental, Wine, Rockstar Games Launcher, Grand Theft Auto V and Majestic Launcher are also external software and are not part of this repository.
 
-The GUI uses Qt for Python / PySide6, provided under the LGPLv3/GPLv3 or a commercial Qt license. Development installations use the system package. Any bundled release must include the applicable Qt licensing notices and satisfy the chosen license terms.
+The GUI uses Qt for Python / PySide6, provided under the LGPLv3/GPLv3 or a commercial Qt license. Standalone releases use the LGPLv3 option and keep Qt as separate shared libraries inside the temporary application bundle. Python is distributed under the Python Software Foundation License. PyInstaller and its bootloader are distributed under GPL terms with the PyInstaller bootloader exception. The release archive includes the exact upstream license files collected from the build environment under `LICENSES/`; the same files are embedded in the one-file executable.
 
 ## Compatibility technique
 

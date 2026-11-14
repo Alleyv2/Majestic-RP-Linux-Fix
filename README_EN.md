@@ -8,6 +8,10 @@ With explicit user consent, the GUI wizard can automatically download the separa
 
 ## Graphical installation
 
+For a regular installation, download `Majestic-RP-Linux-Fix-v1.2.0-linux-x86_64.tar.gz` from Releases, extract it, and run `Majestic-RP-Linux-Fix-x86_64`. Python and PySide6 are not required to start the interface. Before setup, the application checks Steam, Python, Node.js/npm and other system components and provides a ready-to-copy install command when something is missing.
+
+Source installation remains available:
+
 ```bash
 python3 install_app.py
 ```

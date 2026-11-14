@@ -24,4 +24,4 @@ No authentication tokens, cookies or account data are copied into reports. The i
 
 ## Distribution
 
-Development builds can use the system PySide6 package. Public end-user releases should be built in a clean environment with the official `pyside6-deploy` tool and published with checksums. Do not silently self-update executable code. Show the version and release notes, download to a staging directory, verify a signed manifest or checksum, and replace files only after user confirmation.
+Development builds can use the system PySide6 package. Tagged public releases are built on Ubuntu 22.04 with PyInstaller and published as a standalone x86_64 executable, a permission-preserving tar archive and `SHA256SUMS`. The executable bundles the GUI runtime but not Steam, Proton, GTA, Majestic or the external runner. It never silently self-updates executable code.

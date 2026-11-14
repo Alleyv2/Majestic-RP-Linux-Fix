@@ -6,3 +6,7 @@ __pycache__/
 assets/logs-ru.png
 .idea/
 .vscode/
+build/
+build-licenses/
+dist/
+*.spec
